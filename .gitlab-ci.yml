@@ -15,7 +15,7 @@ build_master:
     - master
   script:
     - echo "$CI_CONTAINER_REGISTRY_PASSWORD" | docker login $CI_CONTAINER_DEVELOP_REGISTRY --username $CI_CONTAINER_REGISTRY_USER --password-stdin
-    - docker pull node:12.16.3-alpine
+    - docker pull node:16.16.0-alpine3.15
     - docker build --build-arg start_env=prod -t $DEVELOP_CONTAINER_REGISTRY:prod .
     - docker push $DEVELOP_CONTAINER_REGISTRY:prod
   tags:
@@ -29,7 +29,7 @@ build_idc_test:
     - test
   script:
     - echo "$CI_CONTAINER_REGISTRY_PASSWORD" | docker login $CI_CONTAINER_DEVELOP_REGISTRY --username $CI_CONTAINER_REGISTRY_USER --password-stdin
-    - docker pull node:12.16.3-alpine
+    - docker pull node:16.16.0-alpine3.15
     - docker build --build-arg start_env=test -t $DEVELOP_CONTAINER_REGISTRY:test .
     - docker push $DEVELOP_CONTAINER_REGISTRY:test
   tags:
@@ -43,7 +43,7 @@ build_pre:
     - /^pre-.*$/ # pre-${date} 分支
   script:
     - echo "$CI_CONTAINER_REGISTRY_PASSWORD" | docker login $CI_CONTAINER_DEVELOP_REGISTRY --username $CI_CONTAINER_REGISTRY_USER --password-stdin
-    - docker pull node:12.16.3-alpine
+    - docker pull node:16.16.0-alpine3.15
     - docker build --build-arg start_env=pre -t $DEVELOP_CONTAINER_REGISTRY:pre .
     - docker push $DEVELOP_CONTAINER_REGISTRY:pre
   tags:
