@@ -1,0 +1,52 @@
+{
+  "name": "web-common-server",
+  "version": "1.0.0",
+  "description": "前端公共服务",
+  "private": true,
+  "egg": {
+    "declarations": true
+  },
+  "dependencies": {
+    "@sentry/node": "^5.5.0",
+    "ctrip-apollo": "^4.4.3",
+    "egg": "^2",
+    "egg-scripts": "^2",
+    "egg-view-nunjucks": "^2.2.0"
+  },
+  "devDependencies": {
+    "autod": "^3",
+    "autod-egg": "^1",
+    "egg-bin": "^4",
+    "egg-ci": "^2",
+    "egg-mock": "^4",
+    "eslint": "^8",
+    "eslint-config-egg": "^12"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "start:prod": "START_ENV=prod egg-scripts start --title=egg-server-web-common-server --workers=8",
+    "start:test": "START_ENV=test egg-scripts start --title=egg-server-web-common-server --workers=8",
+    "start": "START_ENV=test egg-scripts start --title=egg-server-web-common-server",
+    "stop": "egg-scripts stop --title=egg-server-web-common-server",
+    "dev": "egg-bin dev",
+    "debug": "egg-bin debug",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod"
+  },
+  "ci": {
+    "version": "16",
+    "type": "github"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "gt",
+  "license": "MIT"
+}
