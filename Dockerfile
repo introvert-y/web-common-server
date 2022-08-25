@@ -7,12 +7,13 @@ ENV START_ENV ${start_env}
 RUN mkdir -p /home/Service
 WORKDIR /home/Service
 
-COPY ./serve/package.json /home/Service/package.json
+COPY ./serve/package.json /home/Service/serve/package.json
 RUN npm install -g cnpm --registry=https://registry.npmmirror.com
 # RUN npm cache clean --force
 WORKDIR ./serve
 RUN cnpm i
-COPY ./serve /home/Service
+
+COPY . /home/Service
 WORKDIR ../serve
 
 # CMD npm run deploy
