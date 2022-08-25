@@ -10,8 +10,10 @@ WORKDIR /home/Service
 COPY ./serve/package.json /home/Service/package.json
 RUN npm install -g cnpm --registry=https://registry.npmmirror.com
 # RUN npm cache clean --force
+WORKDIR ./serve
 RUN cnpm i
 COPY ./serve /home/Service
+WORKDIR ../serve
 
 # CMD npm run deploy
 EXPOSE 7001
