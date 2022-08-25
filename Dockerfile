@@ -1,5 +1,5 @@
-FROM node:12.16.3-alpine
-# FROM node:16.16.0-alpine3.15
+# FROM node:12.16.3-alpine
+FROM node:16.16.0-alpine3.15
 
 ARG start_env
 ENV START_ENV ${start_env}
