@@ -1,0 +1,80 @@
+variables:
+  CONTAINER_REGISTRY: $CI_CONTAINER_REGISTRY/$CI_CONTAINER_REGISTRY_PROJECTS/$CI_PROJECT_NAME
+  PRODUCTION_CONTAINER_REGISTRY: $CI_PRODUCTION_CONTAINER_REGISTRY/$CI_CONTAINER_REGISTRY_PROJECTS/$CI_PROJECT_NAME
+  DEVELOP_CONTAINER_REGISTRY: $CI_CONTAINER_DEVELOP_REGISTRY/$CI_CONTAINER_REGISTRY_PROJECTS/$CI_PROJECT_NAME
+  CONTAINER_IMAGE: $CI_CONTAINER_REGISTRY_PROJECTS/$CI_PROJECT_NAME:$CI_BUILD_REF_NAME
+
+stages:
+  - build
+  - deploy
+# 构建正式环境
+build_master:
+  stage: build
+  image: docker:latest
+  only:
+    - master
+  script:
+    - echo "$CI_CONTAINER_REGISTRY_PASSWORD" | docker login $CI_CONTAINER_DEVELOP_REGISTRY --username $CI_CONTAINER_REGISTRY_USER --password-stdin
+    - docker pull node:16.16.0-alpine3.15
+    - docker build --build-arg start_env=prod -t $DEVELOP_CONTAINER_REGISTRY:prod .
+    - docker push $DEVELOP_CONTAINER_REGISTRY:prod
+  tags:
+    - ercp_docker_1
+
+# 构建测试环境
+build_idc_test:
+  stage: build
+  image: docker:latest
+  only:
+    - test
+  script:
+    - echo "$CI_CONTAINER_REGISTRY_PASSWORD" | docker login $CI_CONTAINER_DEVELOP_REGISTRY --username $CI_CONTAINER_REGISTRY_USER --password-stdin
+    - docker pull node:16.16.0-alpine3.15
+    - docker build --build-arg start_env=test -t $DEVELOP_CONTAINER_REGISTRY:test .
+    - docker push $DEVELOP_CONTAINER_REGISTRY:test
+  tags:
+    - ercp_docker_1
+
+# 构建预发布环境
+build_pre:
+  stage: build
+  image: docker:latest
+  only:
+    - /^pre-.*$/ # pre-${date} 分支
+  script:
+    - echo "$CI_CONTAINER_REGISTRY_PASSWORD" | docker login $CI_CONTAINER_DEVELOP_REGISTRY --username $CI_CONTAINER_REGISTRY_USER --password-stdin
+    - docker pull node:16.16.0-alpine3.15
+    - docker build --build-arg start_env=pre -t $DEVELOP_CONTAINER_REGISTRY:pre .
+    - docker push $DEVELOP_CONTAINER_REGISTRY:pre
+  tags:
+    - ercp_docker_1
+
+#IDC 测试环境部署
+deploy_test:
+  stage: deploy
+  image: appropriate/curl
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - curl -X POST http://k8s-tools-rocketos.zuzuche.net/redeploy.php -d "namespace=ercp-test-hk&deployment=$wsw_k8s_test_deployments_name"
+    - curl -X POST http://k8s-tools-rocketos.zuzuche.net/redeploy.php -d "namespace=ercp-test-cn&deployment=$wsw_k8s_test_deployments_name"
+  environment:
+    name: test
+  only:
+    - test
+  tags:
+    - ercp_runner
+#生产环境部署
+# deploy_prod:
+#   stage: deploy
+#   variables:
+#     GIT_STRATEGY: none
+#   script:
+#     - curl -X POST "$prod_webhook" -H "$webhook_header" -d "{\"push_data\":{\"tag\":\"$CI_BUILD_REF_NAME\"},\"repository\":{\"repo_name\":\"$PRODUCTION_CONTAINER_REGISTRY\"}}"
+#   environment:
+#     name: prod
+#   only:
+#     - master
+#     - cn-master
+#   tags:
+#     - ercp_docker_1
