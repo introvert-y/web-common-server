@@ -56,8 +56,8 @@ deploy_test:
   variables:
     GIT_STRATEGY: none
   script:
-    - curl -X POST http://k8s-tools-rocketos.zuzuche.net/redeploy.php -d "namespace=ercp-test-hk&deployment=$wsw_k8s_test_deployments_name"
-    - curl -X POST http://k8s-tools-rocketos.zuzuche.net/redeploy.php -d "namespace=ercp-test-cn&deployment=$wsw_k8s_test_deployments_name"
+    - curl -X POST http://k8s-tools-rocketos.zuzuche.net/redeploy.php -d "namespace=ercp-test-hk&deployment=web-common-service"
+    - curl -X POST http://k8s-tools-rocketos.zuzuche.net/redeploy.php -d "namespace=ercp-test-cn&deployment=web-common-service"
   environment:
     name: test
   only:
