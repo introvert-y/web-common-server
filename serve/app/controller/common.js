@@ -9,7 +9,7 @@ class HomeController extends Controller {
   }
   async test() {
     const { ctx } = this;
-    ctx.body = 'common success';
+    ctx.body = 'common success123';
   }
   // 公共转发
   async commonApi() {
