@@ -1,32 +1,35 @@
 const child_process = require('child_process');
-module.exports = app => {
+module.exports = (app) => {
   app.messenger.on('egg-ready', async () => {
     const ctx = await app.createAnonymousContext();
-    let child = child_process.fork("./build/preload.js");
-    console.log('agent 进程')
-      try {
-        child &&
-          child.on("message", async (m) => {
-            if (m && m.length === 2) {
-              const [key, value] = m;
-              let transformValue = value;
-              switch (key) {
-                case 'reqUrlMap':
-                case 'cdnUrlMap': {
-                  transformValue = JSON.parse(value);
-                  break;
-                }
-              }
-              if (key === 'language') {
-                // app.config.apolloConfig[key] = transformValue;
-                // ctx.getLanguagePackage();
-                // return;
-              }
-              app.messenger.sendToApp('customConfig', [key, transformValue]);
+    let child = child_process.fork('./build/preload.js');
+    console.log('agent 进程启动');
+    try {
+      child &&
+        child.on('message', async (m) => {
+          if (m && m.length === 2) {
+            const [key, value] = m;
+
+            app.config.apolloConfig[key] = value;
+
+            if (key === 'language') {
+              ctx.getLanguagePackage();
+              return;
             }
-          });
+            app.messenger.sendToApp('customConfig', [key, value]);
+          }
+        });
+    } catch (err) {
+      console.log('agent.js err' + err);
+    }
+    app.messenger.on('getConfig', async (pid) => {
+      console.log('agent getConfig worker pid', pid);
+      try {
+        app.messenger.sendTo(pid, 'getAllConfig', app.config.apolloConfig);
       } catch (err) {
-        console.log("agent.js err" + err);
+        console.log('agent.js err' + err);
       }
+    });
   });
-}
+
+};

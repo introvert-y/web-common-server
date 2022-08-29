@@ -1,4 +1,4 @@
-const child_process = require("child_process");
+const child_process = require('child_process');
 // const Sentry = require("@sentry/node");
 
 // app.js 入口文件
@@ -31,29 +31,36 @@ class AppBootHook {
     // 应用已经启动完毕
     const env = this.app.config.env;
     const that = this;
-      this.app.messenger.on("customConfig", ([key, value]) => {
-        if (!key || !value) {
-          return;
-        }
-        that.app.config.apolloConfig[key] = value;
-      });
+    // 启动触发
+    this.app.messenger.on('customConfig', ([key, value]) => {
+      if (!key || !value) {
+        return;
+      }
+      that.app.config.apolloConfig[key] = value;
+    });
+    /**
+     * npm run dev
+     * 因为agent只在最初ready的时候广播了配置，
+     * 但是每次改动会再次触发该流程，导致配置丢失
+     * 所以补充这个事件来获取配置
+     */
+    this.app.messenger.sendToAgent('getConfig', process.pid);
+    this.app.messenger.on('getAllConfig', (data) => {
+      that.app.config.apolloConfig = data;
+    });
     /**
      * 1、npm run dev 时为local
      * 2、npm run start 时为prod
      * 因为EGG_SERVER_ENV当NODE_ENV设置为production并且EGG_SERVER_ENV未指定时将设置为 prod
      * https://www.jianshu.com/p/dd355c7ecd22
      */
-     if (env !== "local") {
-      // Sentry.init({
-      //   dsn: "https://035e07435ff142189005b2468d8bb063@logger2.zuzuche.com/39",
-      //   environment: process.env.START_ENV,
-      //   // We recommend adjusting this value in production, or using tracesSampler
-      //   // for finer control
-      //   tracesSampleRate: 1.0,
-      // });
-      // this.app.config.sentry = Sentry;
+    if (env !== 'local') {
+      Sentry.init({
+        dsn: 'https://bffacb4cf6da4870ae9f35f84338a493@logger2.zuzuche.com/64',
+        release: this.app.config.keys,
+      });
+      this.app.config.sentry = Sentry;
     }
-
   }
 
   async serverDidReady() {

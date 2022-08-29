@@ -28,7 +28,9 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --title=egg-server-web-common-server",
+    "start:prod": "START_ENV=prod egg-scripts start --title=egg-server-web-common-server --workers=8",
+    "start:test": "START_ENV=test egg-scripts start --title=egg-server-web-common-server --workers=8",
+    "start": "START_ENV=test egg-scripts start --title=egg-server-web-common-server",
     "stop": "egg-scripts stop --title=egg-server-web-common-server",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",

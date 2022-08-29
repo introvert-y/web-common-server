@@ -31,6 +31,7 @@ class HomeController extends Controller {
       const result = await ctx.curl(config.apolloConfig.cdnUrlMap[templateKey]);
       ctx.body = await ctx.renderString(result.data.toString(), {
         // 对应需要注入的动态配置
+        PAGE_CONFIG: config.apolloConfig.clientConfigMap[templateKey] || {},
       });
     } catch (err) {
       console.log('请求cdn模板错误', err);
