@@ -43,41 +43,41 @@ module.exports = appInfo => {
     textLimit: "100mb",
     // 值的大小可以根据自己的需求修改 这里只做演示
   };
-  config.multipart = {
-    mode: "file",
-    whitelist: [
-      // images
-      ".jpg",
-      ".jpeg", // image/jpeg
-      ".png", // image/png, image/x-png
-      ".gif", // image/gif
-      ".bmp", // image/bmp
-      ".wbmp", // image/vnd.wap.wbmp
-      ".webp",
-      ".tif",
-      ".psd",
-      // text
-      ".svg",
-      ".js",
-      ".jsx",
-      ".json",
-      ".css",
-      ".less",
-      ".html",
-      ".htm",
-      ".xml",
-      // tar
-      ".zip",
-      ".gz",
-      ".tgz",
-      ".gzip",
-      // video
-      ".mp3",
-      ".mp4",
-      ".avi",
-      ".pdf",
-    ],
-  };
+  // config.multipart = {
+  //   mode: "file",
+  //   whitelist: [
+  //     // images
+  //     ".jpg",
+  //     ".jpeg", // image/jpeg
+  //     ".png", // image/png, image/x-png
+  //     ".gif", // image/gif
+  //     ".bmp", // image/bmp
+  //     ".wbmp", // image/vnd.wap.wbmp
+  //     ".webp",
+  //     ".tif",
+  //     ".psd",
+  //     // text
+  //     ".svg",
+  //     ".js",
+  //     ".jsx",
+  //     ".json",
+  //     ".css",
+  //     ".less",
+  //     ".html",
+  //     ".htm",
+  //     ".xml",
+  //     // tar
+  //     ".zip",
+  //     ".gz",
+  //     ".tgz",
+  //     ".gzip",
+  //     // video
+  //     ".mp3",
+  //     ".mp4",
+  //     ".avi",
+  //     ".pdf",
+  //   ],
+  // };
   config.apolloConfig = {}
   config.security= {
     csrf : {

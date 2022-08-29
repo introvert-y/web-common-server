@@ -38,8 +38,17 @@ const start = async () => {
     .cluster(config.clusterName)
     .namespace(config.namespaceName)
     .on("change", ({ key, oldValue, newValue }) => {
-      process.env[key] = newValue;
-      process.send([key, newValue]);
+      let transformValue = newValue;
+      switch (key) {
+        case 'reqUrlMap':
+        case 'clientConfigMap':
+        case 'cdnUrlMap': {
+          transformValue = JSON.parse(transformValue);
+          break;
+        }
+      }
+      process.env[key] = transformValue;
+      process.send([key, transformValue]);
     });
 
   // - Fetch configurations for the first time
@@ -48,11 +57,22 @@ const start = async () => {
     const info = await ns.ready();
     const obj = info.config();
     console.log(">>>>>>>>>>>>>> first fetch >>>>>>>>>>");
+    const totalConfigObject = {};
     for (var key in obj) {
-      process.env[key] = obj[key];
-      process.send([key, obj[key]]);
+      let transformValue = obj[key];
+      switch (key) {
+        case 'reqUrlMap':
+        case 'clientConfigMap':
+        case 'cdnUrlMap': {
+          transformValue = JSON.parse(transformValue);
+          break;
+        }
+      }
+      totalConfigObject[key] = transformValue;
+      process.env[key] = transformValue;
+      process.send([key, transformValue]);
     }
-    console.log('完整配置', obj);
+    console.log('JSON.parse 后的完整配置', totalConfigObject);
   } catch(err) {
     console.log('err', err)
   }
