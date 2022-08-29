@@ -46,7 +46,7 @@ module.exports = {
         },
         options,
       );
-      // console.log('url,options**##############:', url, options);
+      console.log('url,options**##############:', url, options);
       let ret = await this.curl(url, options);
       if (!ret) {
         ret = {
@@ -74,7 +74,7 @@ module.exports = {
       console.log(
         '请求错误 error: url,optionsData, optionsHeaders ##############:',
         url,
-        // options.data,
+        options.data,
         options.headers,
       );
     }
