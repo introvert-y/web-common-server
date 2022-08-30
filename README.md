@@ -46,3 +46,5 @@ $ npm stop
 无代码侵入式.保底方案：去配置中心复制相应配置注入window.PAGE_CONFIG
 - 客户端登陆如何绕过，去测试或线上环境复制相应的token到cookie
 
+- 客户端请求路由如 localhost:9000/api/ercp/test 会转发到 web-ercp-rental-service服务(处理复杂业务)
+- 客户端请求路由如 localhost:9000/api/zuul/xxx 会转发到 zuul服务

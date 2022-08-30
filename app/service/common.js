@@ -9,10 +9,13 @@ class commonService extends Service {
       let options = {
         method: ctx.request.method,
         data,
-        headers: {
-          'Content-Type': ctx.headers['content-type'],
-        },
       };
+      const contentTypeValue = ctx.headers['content-type'];
+      if (contentTypeValue) {
+        options.headers = {
+          'Content-Type': ctx.headers['content-type'],
+        };
+      }
       const slicePath = path.slice(5); // 去除 '/api/'
       let requestUrl = '';
       if (slicePath.indexOf('/') === -1) {
@@ -21,7 +24,7 @@ class commonService extends Service {
       } else {
         requestUrl = slicePath.replace(/(.*?)\//, (str) => {
           const keyword = str.slice(0, -1);
-          return config.apolloConfig.reqUrlMap[keyword] + "/";
+          return `${config.apolloConfig.reqUrlMap[keyword]}/${keyword === 'ercp' ? 'api/': ''}`;
         });
       }
       console.log('requestUrl', requestUrl)
