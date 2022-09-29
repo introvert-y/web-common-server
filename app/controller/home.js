@@ -5,9 +5,7 @@ const Controller = require('egg').Controller;
 class HomeController extends Controller {
   async proxyRequest() {
     const { ctx } = this;
-    return (ctx.body = await ctx.service.common.toRequestThePath(
-      ctx.request.body,
-    ));
+    return (ctx.body = await ctx.service.common.toRequestThePath());
   }
   async uploadByFile() {
     const { ctx } = this;
